@@ -58,7 +58,7 @@
           devShells.default = pkgs.mkShell {
             shellHook = ''
               export KREW_ROOT="$HOME/.local/share/krew"
-              export PATH="$''${KREW_ROOT}/bin:$PATH"
+              export PATH="''${KREW_ROOT}/bin:$PATH"
               krew install oidc-login  >/dev/null 2>&1 # required by omnictl for using kubectl
               krew install cnpg >/dev/null 2>&1 # provides kubectl cnpg for managing postgres clusters
 
