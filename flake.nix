@@ -25,10 +25,20 @@
             };
 
             vendorHash = "sha256-7cx+ys9CqL8Yjy1Jd1iXSfmlfG9yCNckhOId5EFqtQc=";
-            ldflags = [ "-s" "-w" ];
+            preBuild = ''
+              mkdir -p internal/version/data
+              echo -n "v${version}" > internal/version/data/tag
+              echo -n "${src.rev}" > internal/version/data/sha  # This should give us the Git SHA
+            '';
+            ldflags = [
+              "-s"
+              "-w"
+              "-X internal/version.Name=omnictl"
+              "-X internal/version.Tag=v${version}"
+            ];
             env = { GOWORK = "off"; };
             subPackages = [ "cmd/omnictl" ];
-            nativeBuildInputs = [ pkgs.installShellFiles ];
+            nativeBuildInputs = with pkgs; [ installShellFiles git ];
             postInstall = ''
               installShellCompletion --cmd omnictl \
                 --bash <($out/bin/omnictl completion bash) \
@@ -47,6 +57,8 @@
           packages.default = omnictl;
           devShells.default = pkgs.mkShell {
             shellHook = ''
+              export KREW_ROOT="$HOME/.local/share/krew"
+              export PATH="$''${KREW_ROOT}/bin:$PATH"
               krew install oidc-login  >/dev/null 2>&1 # required by omnictl for using kubectl
               krew install cnpg >/dev/null 2>&1 # provides kubectl cnpg for managing postgres clusters
 
@@ -63,6 +75,9 @@
                 kubecolor # colorized kubectl output
                 kubernetes-helm # k8s package manager
                 talosctl # Talos (k8s OS)
+
+                xdg-utils # required by oidc-login and omnictl
+                gnupg # required by oidc-login and omnictl
               ]);
           };
         };
