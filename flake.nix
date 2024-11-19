@@ -48,6 +48,10 @@
             shellHook = ''
               krew install oidc-login  >/dev/null 2>&1 # required by omnictl for using kubectl
               krew install cnpg >/dev/null 2>&1 # provides kubectl cnpg for managing postgres clusters
+
+              kubectl() {
+                kubecolor "$@"
+              }
             '';
             buildInputs = [ omnictl ] # SaaS for Talos management
               ++ (with pkgs; [
