@@ -44,6 +44,7 @@
             };
           };
         in {
+          packages.default = omnictl;
           devShells.default = pkgs.mkShell {
             shellHook = ''
               krew install oidc-login  >/dev/null 2>&1 # required by omnictl for using kubectl
