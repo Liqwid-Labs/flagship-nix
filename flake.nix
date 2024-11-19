@@ -65,6 +65,9 @@
               kubectl() {
                 kubecolor "$@"
               }
+              k() {
+                kubecolor "$@"
+              }
             '';
             buildInputs = [ omnictl ] # SaaS for Talos management
               ++ (with pkgs; [
